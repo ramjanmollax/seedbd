@@ -165,6 +165,19 @@ app.post('/api/upload', (req, res) => {
       buffer = Buffer.from(rawData, 'base64');
     }
 
+    // On Vercel serverless, local disk storage /tmp is temporary and not served as static files.
+    // Return the compressed Data URL directly or write to disk if running on full node server.
+    if (process.env.VERCEL) {
+      const sizeKb = Math.round((rawData.length * 0.75) / 1024);
+      const url = rawData.startsWith('data:') ? rawData : `data:image/${ext};base64,${rawData}`;
+      return res.json({
+        success: true,
+        url,
+        sizeKb,
+        filename: filename || 'image.webp',
+      });
+    }
+
     const safeName = `img_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
     const filePath = path.join(UPLOADS_DIR, safeName);
     fs.writeFileSync(filePath, buffer);
