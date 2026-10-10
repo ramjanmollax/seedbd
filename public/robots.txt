@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://seedhavenbd.com/sitemap.xml
