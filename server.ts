@@ -1238,6 +1238,24 @@ app.get(['/admin', '/admin.html'], (req, res) => {
   res.status(404).send('Admin panel not found. Please verify admin.html exists.');
 });
 
+// SPA Catch-All fallback route for direct page links and browser refreshes
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API route not found' });
+  }
+
+  const rootIndex = path.join(process.cwd(), 'index.html');
+  const distIndex = path.join(process.cwd(), 'dist', 'index.html');
+
+  if (fs.existsSync(rootIndex)) {
+    return res.sendFile(rootIndex);
+  }
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
+  }
+  next();
+});
+
 // Export Express app for Vercel Serverless Functions and modular deployment
 export default app;
 

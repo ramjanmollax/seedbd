@@ -127,8 +127,10 @@ export default function App() {
   const isShippingRoute = pathname === '/shipping' || pathname === '/shipping-policy';
   const isCartOpen = pathname === '/cart';
   const isWishlistModalOpen = pathname === '/wishlist';
+  const [storeSettings, setStoreSettings] = useState<StoreSettings>(() => getCachedSettings('store', DEFAULT_STORE_SETTINGS));
+
   const isCompareModalOpen = pathname === '/compare';
-  const isAuthModalOpen = pathname === '/login' || pathname === '/auth' || pathname === '/account';
+  const isAuthModalOpen = (pathname === '/login' || pathname === '/auth' || pathname === '/account') && storeSettings?.loginEnabled !== false;
   const isSearchOpen = pathname === '/search';
 
   const isContactOpen = isAboutRoute || isContactRoute;
@@ -162,7 +164,6 @@ export default function App() {
   const [contactSettings, setContactSettings] = useState<ContactSettings>(() => getCachedSettings('contact', DEFAULT_CONTACT_SETTINGS));
   const [policySettings, setPolicySettings] = useState<PolicySettings>(() => getCachedSettings('policies', DEFAULT_POLICY_SETTINGS));
   const [seoSettings, setSeoSettings] = useState<SeoSettings>(() => getCachedSettings('seo', DEFAULT_SEO_SETTINGS));
-  const [storeSettings, setStoreSettings] = useState<StoreSettings>(() => getCachedSettings('store', DEFAULT_STORE_SETTINGS));
   const [menuSettings, setMenuSettings] = useState<MenuSettings>(() => getCachedSettings('menu', DEFAULT_MENU_SETTINGS));
   const [integrationsSettings, setIntegrationsSettings] = useState<IntegrationsSettings>(DEFAULT_INTEGRATIONS_SETTINGS);
   const [couponsList, setCouponsList] = useState<Coupon[]>([]);
