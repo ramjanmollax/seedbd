@@ -467,7 +467,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <div>
                     <p className="text-slate-400 text-[11px] font-medium">বীজের ধরন</p>
                     <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm">
-                      {categoryName}
+                      {product.seedType || categoryName}
                     </p>
                   </div>
                 </div>
@@ -503,6 +503,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </div>
               </div>
             </section>
+
+            {/* Cultivation Guide Box */}
+            {product.cultivationGuide && (
+              <section className="bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 rounded-2xl border border-emerald-200 p-4 sm:p-5 shadow-xs space-y-2 mt-3">
+                <div className="flex items-center gap-2 text-[#118137]">
+                  <Sprout className="w-5 h-5" />
+                  <h3 className="text-sm sm:text-base font-black text-slate-900">কীভাবে চাষ করবেন (Cultivation Guide)</h3>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
+                  {product.cultivationGuide}
+                </p>
+              </section>
+            )}
 
             {/* Delivery Box */}
             <section className="bg-white rounded-xl border border-slate-200/90 p-3.5 flex items-center gap-2.5 shadow-2xs text-xs sm:text-sm font-semibold text-slate-700">
@@ -604,14 +617,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         )}
 
         {/* Customer Reviews Section */}
-        <section className="bg-gradient-to-br from-white to-emerald-50/30 rounded-3xl border border-emerald-100/80 p-4 sm:p-5 shadow-sm space-y-5 mb-6">
-          {/* Section Header */}
-          <div className="flex items-center gap-2 border-b border-emerald-100/60 pb-3">
-            <MessageSquare className="w-5 h-5 text-[#118137]" />
-            <h3 className="text-base sm:text-lg font-black text-[#1c3822]">
-              গ্রাহকদের রিভিউ ও রেটিং
-            </h3>
-          </div>
+        {!product.disableReviews && (
+          <section className="bg-gradient-to-br from-white to-emerald-50/30 rounded-3xl border border-emerald-100/80 p-4 sm:p-5 shadow-sm space-y-5 mb-6">
+            {/* Section Header */}
+            <div className="flex items-center gap-2 border-b border-emerald-100/60 pb-3">
+              <MessageSquare className="w-5 h-5 text-[#118137]" />
+              <h3 className="text-base sm:text-lg font-black text-[#1c3822]">
+                গ্রাহকদের রিভিউ ও রেটিং
+              </h3>
+            </div>
 
 
 
@@ -866,6 +880,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </form>
           )}
         </section>
+        )}
 
 
       </main>

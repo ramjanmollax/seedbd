@@ -911,6 +911,7 @@ export default function App() {
               <ProductDetailPage
                 product={activeProduct}
                 allProducts={productsList}
+                categoriesList={categoriesList}
                 cartCount={totalCartCount}
                 userRating={userRatings[activeProduct.id]}
                 onRateProduct={handleRateProduct}

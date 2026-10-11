@@ -23,6 +23,9 @@ export interface Product {
   season?: string;
   packSize?: string;
   plantingTip?: string;
+  seedType?: string;
+  cultivationGuide?: string;
+  disableReviews?: boolean;
   popular?: boolean;
   isPopular?: boolean;
   sproutDays?: string;
