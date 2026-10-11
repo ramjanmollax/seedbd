@@ -915,6 +915,7 @@ export default function App() {
                 cartCount={totalCartCount}
                 userRating={userRatings[activeProduct.id]}
                 onRateProduct={handleRateProduct}
+                reviewEnabled={storeSettings?.reviewEnabled !== false}
                 onBack={handleBackFromProduct}
                 onOpenCart={() => handleOpenCart(true)}
                 onAddToCart={handleAddToCart}
@@ -1144,8 +1145,8 @@ export default function App() {
             </>
           )}
 
-          {/* Footer Section (Shown only when not on product detail view) */}
-          {!routeProductId && (
+          {/* Footer Section */}
+          {
             <Footer
               settings={footerSettings}
               contactSettings={contactSettings}
@@ -1161,7 +1162,7 @@ export default function App() {
               onOpenPolicy={(tab) => handleOpenPolicy(true, tab || 'privacy')}
               onOpenCart={() => handleOpenCart(true)}
             />
-          )}
+          }
         </div>
 
         {/* Side Menu Drawer */}
@@ -1330,7 +1331,8 @@ export default function App() {
         )}
 
         {/* WhatsApp Business Floating Chat Button */}
-        {integrationsSettings?.communication?.whatsappEnabled !== false &&
+        {storeSettings?.whatsappFloatEnabled !== false &&
+          integrationsSettings?.communication?.whatsappEnabled !== false &&
           integrationsSettings?.communication?.whatsappChatButton !== false && (
             <div
               className={`fixed z-40 transition-all duration-300 ${

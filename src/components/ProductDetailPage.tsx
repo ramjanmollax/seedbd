@@ -36,6 +36,7 @@ interface ProductDetailPageProps {
   onOpenCart?: () => void;
   userRating?: number;
   onRateProduct?: (productId: string, rating: number) => void;
+  reviewEnabled?: boolean;
   currentUser?: { name: string; phone: string } | null;
   onOpenAuth: () => void;
   loginEnabled?: boolean;
@@ -53,6 +54,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onOpenCart,
   userRating,
   onRateProduct,
+  reviewEnabled = true,
   currentUser,
   onOpenAuth,
   loginEnabled = true,
@@ -504,6 +506,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </section>
 
+              {/* Description */}
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-3 px-1">
+                {product.description ||
+                  'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।'}
+              </p>
+
             {/* Cultivation Guide Box */}
             {product.cultivationGuide && (
               <section className="bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 rounded-2xl border border-emerald-200 p-4 sm:p-5 shadow-xs space-y-2 mt-3">
@@ -617,7 +625,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         )}
 
         {/* Customer Reviews Section */}
-        {!product.disableReviews && (
+        {reviewEnabled !== false && !product.disableReviews && (
           <section className="bg-gradient-to-br from-white to-emerald-50/30 rounded-3xl border border-emerald-100/80 p-4 sm:p-5 shadow-sm space-y-5 mb-6">
             {/* Section Header */}
             <div className="flex items-center gap-2 border-b border-emerald-100/60 pb-3">

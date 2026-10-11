@@ -211,6 +211,8 @@ export interface StoreSettings {
   currency?: string;
   language?: string;
   loginEnabled?: boolean;
+  reviewEnabled?: boolean;
+  whatsappFloatEnabled?: boolean;
 }
 
 export interface SeoSettings {
@@ -394,6 +396,8 @@ export const DEFAULT_STORE_SETTINGS: StoreSettings = {
   currency: 'BDT',
   language: 'bn',
   loginEnabled: true,
+  reviewEnabled: true,
+  whatsappFloatEnabled: true,
 };
 
 // Subscribe to real-time homepage settings from Firestore
@@ -748,6 +752,8 @@ export function subscribeToStoreSettings(callback: (settings: StoreSettings) => 
           currency: data.currency !== undefined ? data.currency : DEFAULT_STORE_SETTINGS.currency,
           language: data.language !== undefined ? data.language : DEFAULT_STORE_SETTINGS.language,
           loginEnabled: data.loginEnabled !== false,
+          reviewEnabled: data.reviewEnabled !== false,
+          whatsappFloatEnabled: data.whatsappFloatEnabled !== false,
         });
       } else {
         callback(DEFAULT_STORE_SETTINGS);

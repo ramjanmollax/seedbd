@@ -274,51 +274,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {/* User Account / Auth */}
-          {storeSettings?.loginEnabled !== false && (
-            <div className="relative">
-              {currentUser ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserDropdown((prev) => !prev)}
-                    className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100 text-[#093d20] transition-colors cursor-pointer text-xs font-bold"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs font-bold">
-                      {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
-                    </div>
-                    <span className="hidden sm:inline max-w-[100px] truncate">{currentUser.name || 'আমার একাউন্ট'}</span>
-                    <ChevronDown size={14} className="text-emerald-700 hidden sm:inline" />
-                  </button>
 
-                  {showUserDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-xs font-bold text-gray-900 truncate">{currentUser.name}</p>
-                        <p className="text-[10px] text-gray-500 truncate">{currentUser.phone}</p>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setShowUserDropdown(false);
-                          onLogout();
-                        }}
-                        className="w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
-                      >
-                        <LogOut size={14} />
-                        <span>লগআউট করুন</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <button
-                  onClick={onOpenAuth}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-[#1c3822] hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200"
-                >
-                  <User size={16} className="text-gray-600" />
-                  <span>লগইন</span>
-                </button>
-              )}
-            </div>
-          )}
 
           {/* Cart Button */}
           <button
