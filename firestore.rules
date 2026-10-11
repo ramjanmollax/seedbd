@@ -1,18 +1,27 @@
 rules_version = '2';
+
+// ============================================================
+// SeedHaven BD - Firestore Rules (বর্তমান কোডের সাথে কাজ করবে)
+// ------------------------------------------------------------
+// কারণ: বর্তমান admin.html এ আসল Firebase লগইন নেই (নিজে থেকেই
+// "Super Admin" হয়ে যায়), তাই Firestore অ্যাডমিন আর কাস্টমারকে
+// আলাদা করতে পারে না। এই কারণে লেখা/পড়া খোলা রাখতে হয়েছে।
+// শক্ত রুলসের জন্য firestore.secure.rules দেখো।
+// ============================================================
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // নিউজলেটার: শুধু ইমেইল সাবমিট করা যাবে, কেউ পড়তে/মুছতে পারবে না
     match /newsletterSubscriptions/{subId} {
-      allow create: if request.resource.data.email is string 
-                    && request.resource.data.email.size() <= 200 
+      allow create: if request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200
                     && request.resource.data.createdAt == request.time;
       allow read, update, delete: if false;
     }
-    match /productRatings/{ratingId} {
-      allow read, write: if true;
-    }
+
+    // বাকি সব কালেকশন (products, orders, settings, banners, ...)
     match /{document=**} {
       allow read, write: if true;
     }
   }
 }
-
