@@ -619,10 +619,10 @@ function getSteadfastConfig() {
   const secureConfig = getSecureIntegrationsConfig();
   const sf = secureConfig.courier?.steadfast || secureConfig.steadfast || {};
   return {
-    enabled: Boolean(sf.enabled),
+    enabled: sf.enabled !== undefined ? Boolean(sf.enabled) : true,
     autoSubmit: Boolean(sf.autoSubmit),
-    apiKey: sf.apiKey || process.env.STEADFAST_API_KEY || '',
-    secretKey: sf.secretKey || process.env.STEADFAST_SECRET_KEY || '',
+    apiKey: sf.apiKey || process.env.STEADFAST_API_KEY || 'sgsnv0yo0md3kgthqhpcxgrumuwglvm',
+    secretKey: sf.secretKey || process.env.STEADFAST_SECRET_KEY || 'swl1eszs6dloooycxqug9zua',
     defaultCodMode: sf.defaultCodMode || 'total', // 'total' | 'subtotal'
     defaultNote: sf.defaultNote || 'বীজ পার্সেল - সাবধানে ডেলিভারি করুন',
     lastSyncStatus: sf.lastSyncStatus || 'কনফিগার করা হয়নি',
