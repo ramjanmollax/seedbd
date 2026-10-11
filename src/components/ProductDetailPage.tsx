@@ -453,12 +453,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   )}
                 </button>
               </div>
-
-              {/* Description */}
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-3">
-                {product.description ||
-                  'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।'}
-              </p>
             </section>
 
             {/* 2x2 Specifications Box */}
@@ -506,24 +500,77 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </section>
 
-              {/* Description */}
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-3 px-1">
-                {product.description ||
-                  'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।'}
-              </p>
+              {/* Description - expandable */}
+              {(() => {
+                const descText = product.description || 'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।';
+                const lines = descText.split('\n').filter(Boolean);
+                const isLong = lines.length > 4 || descText.length > 300;
+                const [descExpanded, setDescExpanded] = React.useState(false);
+                const visibleLines = isLong && !descExpanded ? lines.slice(0, 4) : lines;
+                return (
+                  <div className="mt-3 px-1">
+                    <div className={`text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1.5 ${isLong && !descExpanded ? 'relative' : ''}`}>
+                      {visibleLines.map((line, i) => (
+                        <p key={i}>{line}</p>
+                      ))}
+                      {isLong && !descExpanded && (
+                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent" />
+                      )}
+                    </div>
+                    {isLong && (
+                      <button
+                        onClick={() => setDescExpanded(p => !p)}
+                        className="mt-1.5 text-xs font-bold text-[#118137] hover:underline flex items-center gap-1"
+                      >
+                        {descExpanded ? '▲ কম দেখুন' : '▼ আরো দেখুন'}
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
 
             {/* Cultivation Guide Box */}
-            {product.cultivationGuide && (
-              <section className="bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 rounded-2xl border border-emerald-200 p-4 sm:p-5 shadow-xs space-y-2 mt-3">
-                <div className="flex items-center gap-2 text-[#118137]">
-                  <Sprout className="w-5 h-5" />
-                  <h3 className="text-sm sm:text-base font-black text-slate-900">কীভাবে চাষ করবেন (Cultivation Guide)</h3>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-medium">
-                  {product.cultivationGuide}
-                </p>
-              </section>
-            )}
+            {product.cultivationGuide && (() => {
+              const guideLines = product.cultivationGuide.split('\n').filter((l: string) => l.trim());
+              return (
+                <section className="bg-gradient-to-br from-emerald-50/60 to-white rounded-2xl border border-emerald-200 shadow-xs mt-3 overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center gap-2.5 px-4 py-3 bg-[#118137] text-white">
+                    <Sprout className="w-4 h-4 shrink-0" />
+                    <h3 className="text-sm font-black tracking-wide">চাষ পদ্ধতি</h3>
+                  </div>
+                  {/* Steps */}
+                  <div className="p-4 space-y-3">
+                    {guideLines.map((line: string, i: number) => {
+                      const isStep = /^(ধাপ|step|\d+[\.\)])/i.test(line.trim());
+                      const isWarning = /^[⚠️❗🚫]/.test(line.trim()) || /সতর্ক|warning|সাবধান/i.test(line);
+                      const isTip = /^[💡✅🌿🌱]/.test(line.trim()) || /টিপ|tip/i.test(line);
+                      if (isWarning) return (
+                        <div key={i} className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
+                          <span className="text-amber-500 text-sm mt-0.5 shrink-0">⚠️</span>
+                          <p className="text-xs text-amber-800 font-medium leading-relaxed">{line.replace(/^[⚠️❗🚫]\s*/, '')}</p>
+                        </div>
+                      );
+                      if (isTip) return (
+                        <div key={i} className="flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
+                          <span className="text-emerald-500 text-sm mt-0.5 shrink-0">💡</span>
+                          <p className="text-xs text-emerald-800 font-medium leading-relaxed">{line.replace(/^[💡✅🌿🌱]\s*/, '')}</p>
+                        </div>
+                      );
+                      if (isStep) return (
+                        <div key={i} className="flex items-start gap-3">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#118137] text-white text-[10px] font-black flex items-center justify-center mt-0.5">{i + 1}</span>
+                          <p className="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed pt-0.5">{line.replace(/^(ধাপ\s*\d+[\s\-—:]*|step\s*\d+[\s\-—:]*|\d+[\.\)]\s*)/i, '')}</p>
+                        </div>
+                      );
+                      return (
+                        <p key={i} className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-1">{line}</p>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })()}
 
             {/* Delivery Box */}
             <section className="bg-white rounded-xl border border-slate-200/90 p-3.5 flex items-center gap-2.5 shadow-2xs text-xs sm:text-sm font-semibold text-slate-700">
