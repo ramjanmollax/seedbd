@@ -9,6 +9,7 @@ interface OrderTrackerPageProps {
   onOpenCart?: () => void;
   cartCount?: number;
   isLoading?: boolean;
+  onOpenMemo?: (order: OrderDetails) => void;
 }
 
 export const OrderTrackerPage: React.FC<OrderTrackerPageProps> = ({
@@ -17,6 +18,7 @@ export const OrderTrackerPage: React.FC<OrderTrackerPageProps> = ({
   onOpenCart,
   cartCount = 0,
   isLoading = false,
+  onOpenMemo,
 }) => {
   const [query, setQuery] = useState('');
   const [searchResult, setSearchResult] = useState<OrderDetails[] | null>(null);
@@ -278,7 +280,7 @@ export const OrderTrackerPage: React.FC<OrderTrackerPageProps> = ({
                       </div>
                     </div>
 
-                    <div className="border-t border-gray-100 pt-3 flex items-center justify-between text-xs">
+                    <div className="border-t border-gray-100 pt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
                       <div className="text-gray-600 font-medium">
                         পণ্য সংখ্যা: <span className="text-emerald-700 font-black">{ord.items?.length || 0} টি</span>
                       </div>
@@ -286,6 +288,17 @@ export const OrderTrackerPage: React.FC<OrderTrackerPageProps> = ({
                         মোট বিল: <span className="text-emerald-700">৳{ord.total}</span>
                       </div>
                     </div>
+
+                    {onOpenMemo && (
+                      <button
+                        type="button"
+                        onClick={() => onOpenMemo(ord)}
+                        className="w-full mt-2 py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-[#118137] border border-emerald-200/80 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Truck size={14} className="hidden sm:inline" />
+                        <span>📄 ক্যাশ মেমো দেখুন ও ডাউনলোড করুন</span>
+                      </button>
+                    )}
                   </div>
                 );
               })

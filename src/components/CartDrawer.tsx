@@ -21,6 +21,7 @@ interface CartDrawerProps {
   currentUser?: { name: string; phone: string } | null;
   onOpenAuth: () => void;
   loginEnabled?: boolean;
+  onOpenMemo?: (order: OrderDetails) => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -33,6 +34,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   currentUser,
   onOpenAuth,
   loginEnabled = true,
+  onOpenMemo,
 }) => {
   const [couponCode, setCouponCode] = useState('');
   const [couponsList, setCouponsList] = useState<Coupon[]>([]);
@@ -383,7 +385,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <div className="w-full flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => window.print()}
+                  onClick={() => {
+                    if (onOpenMemo && successOrder) {
+                      onOpenMemo(successOrder);
+                    } else {
+                      window.print();
+                    }
+                  }}
                   className="flex-1 bg-white border border-[#dce2d2] text-[#063d24] hover:bg-[#f2f6eb] py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <Printer size={16} />

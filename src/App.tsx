@@ -19,6 +19,7 @@ import { MarqueeSection } from './components/MarqueeSection';
 import { ProductCompareModal } from './components/ProductCompareModal';
 import { WishlistModal } from './components/WishlistModal';
 import { AuthModal } from './components/AuthModal';
+import { OrderMemoModal } from './components/OrderMemoModal';
 import { Scale, CheckCircle2, X, ChevronLeft, MessageCircle } from 'lucide-react';
 import { trackAddToCart, trackPurchase } from './lib/utils';
 import { CartItem, OrderDetails, Product, Category, Banner, Coupon } from './types';
@@ -180,6 +181,7 @@ export default function App() {
     }
   });
   const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [memoOrder, setMemoOrder] = useState<OrderDetails | null>(null);
 
   useEffect(() => {
     try {
@@ -973,6 +975,7 @@ export default function App() {
               onOpenCart={() => handleOpenCart(true)}
               cartCount={totalCartCount}
               isLoading={isLoadingOrders}
+              onOpenMemo={(ord) => setMemoOrder(ord)}
             />
           ) : (
             <>
@@ -1249,6 +1252,16 @@ export default function App() {
           currentUser={currentUser}
           onOpenAuth={handleOpenAuth}
           loginEnabled={storeSettings?.loginEnabled !== false}
+          onOpenMemo={(ord) => setMemoOrder(ord)}
+        />
+
+        {/* Customer Order Cash Memo Printable Modal */}
+        <OrderMemoModal
+          isOpen={Boolean(memoOrder)}
+          onClose={() => setMemoOrder(null)}
+          order={memoOrder}
+          storeSettings={storeSettings}
+          contactSettings={contactSettings}
         />
 
         {/* Quick Search Modal */}
