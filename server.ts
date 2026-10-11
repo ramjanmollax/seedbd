@@ -1244,14 +1244,24 @@ app.get('*', (req, res, next) => {
     return res.status(404).json({ error: 'API route not found' });
   }
 
+  const requestedFileInDist = path.join(process.cwd(), 'dist', req.path);
+  const requestedFileInRoot = path.join(process.cwd(), req.path);
+
+  if (fs.existsSync(requestedFileInDist) && fs.statSync(requestedFileInDist).isFile()) {
+    return res.sendFile(requestedFileInDist);
+  }
+  if (fs.existsSync(requestedFileInRoot) && fs.statSync(requestedFileInRoot).isFile()) {
+    return res.sendFile(requestedFileInRoot);
+  }
+
   const rootIndex = path.join(process.cwd(), 'index.html');
   const distIndex = path.join(process.cwd(), 'dist', 'index.html');
 
-  if (fs.existsSync(rootIndex)) {
-    return res.sendFile(rootIndex);
-  }
   if (fs.existsSync(distIndex)) {
     return res.sendFile(distIndex);
+  }
+  if (fs.existsSync(rootIndex)) {
+    return res.sendFile(rootIndex);
   }
   next();
 });

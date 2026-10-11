@@ -10,6 +10,18 @@
       "destination": "/admin.html"
     },
     {
+      "source": "/googled0dc2aad1b47a15f.html",
+      "destination": "/googled0dc2aad1b47a15f.html"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/robots.txt"
+    },
+    {
       "source": "/api",
       "destination": "/api/index.ts"
     },
@@ -18,11 +30,7 @@
       "destination": "/api/index.ts"
     },
     {
-      "source": "/sitemap.xml",
-      "destination": "/api/index.ts"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!assets|uploads|api|sitemap\\.xml|robots\\.txt|admin\\.html|googled0dc2aad1b47a15f\\.html).*)",
       "destination": "/index.html"
     }
   ],
