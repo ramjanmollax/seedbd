@@ -1225,17 +1225,17 @@ app.get('/sitemap.xml', async (req, res) => {
   }
 });
 
-// Admin Panel route (support standalone dist/admin.html and root admin.html)
+// Admin Panel route (support standalone root admin.html and dist/admin.html)
 app.get(['/admin', '/admin.html'], (req, res) => {
-  const distAdmin = path.join(process.cwd(), 'dist', 'admin.html');
   const rootAdmin = path.join(process.cwd(), 'admin.html');
-  if (fs.existsSync(distAdmin)) {
-    return res.sendFile(distAdmin);
-  }
+  const distAdmin = path.join(process.cwd(), 'dist', 'admin.html');
   if (fs.existsSync(rootAdmin)) {
     return res.sendFile(rootAdmin);
   }
-  res.status(404).send('Admin panel not found. Please run npm run build.');
+  if (fs.existsSync(distAdmin)) {
+    return res.sendFile(distAdmin);
+  }
+  res.status(404).send('Admin panel not found. Please verify admin.html exists.');
 });
 
 // Export Express app for Vercel Serverless Functions and modular deployment
