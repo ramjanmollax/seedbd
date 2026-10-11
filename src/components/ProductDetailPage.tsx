@@ -24,6 +24,37 @@ import { Product, Review } from '../types';
 import { subscribeToReviews, submitCustomerReview } from '../lib/firestoreProducts';
 import { compressImageFile, preloadImage, trackViewContent } from '../lib/utils';
 
+
+// Expandable Description Component
+function ExpandableDescription({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const lines = text.split('\n').filter(Boolean);
+  const isLong = lines.length > 4 || text.length > 300;
+  const visibleLines = isLong && !expanded ? lines.slice(0, 4) : lines;
+  return (
+    <div className="mt-3 px-1">
+      <div className="relative">
+        <div className="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1.5">
+          {visibleLines.map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
+        </div>
+        {isLong && !expanded && (
+          <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+        )}
+      </div>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(p => !p)}
+          className="mt-2 text-xs font-bold text-[#118137] hover:underline flex items-center gap-1"
+        >
+          {expanded ? '▲ কম দেখুন' : '▼ আরো দেখুন'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 interface ProductDetailPageProps {
   product: Product;
   onBack: () => void;
@@ -500,34 +531,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </section>
 
-              {/* Description - expandable */}
-              {(() => {
-                const descText = product.description || 'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।';
-                const lines = descText.split('\n').filter(Boolean);
-                const isLong = lines.length > 4 || descText.length > 300;
-                const [descExpanded, setDescExpanded] = React.useState(false);
-                const visibleLines = isLong && !descExpanded ? lines.slice(0, 4) : lines;
-                return (
-                  <div className="mt-3 px-1">
-                    <div className={`text-xs sm:text-sm text-slate-600 leading-relaxed space-y-1.5 ${isLong && !descExpanded ? 'relative' : ''}`}>
-                      {visibleLines.map((line, i) => (
-                        <p key={i}>{line}</p>
-                      ))}
-                      {isLong && !descExpanded && (
-                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent" />
-                      )}
-                    </div>
-                    {isLong && (
-                      <button
-                        onClick={() => setDescExpanded(p => !p)}
-                        className="mt-1.5 text-xs font-bold text-[#118137] hover:underline flex items-center gap-1"
-                      >
-                        {descExpanded ? '▲ কম দেখুন' : '▼ আরো দেখুন'}
-                      </button>
-                    )}
-                  </div>
-                );
-              })()}
+              {/* Description */}
+              <ExpandableDescription text={product.description || 'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।'} />
 
             {/* Cultivation Guide Box */}
             {product.cultivationGuide && (() => {
