@@ -56,6 +56,80 @@ function ExpandableDescription({ text }: { text: string }) {
   );
 }
 
+// Cultivation Guide Component
+function CultivationGuide({ text }: { text: string }) {
+  if (!text || !text.trim()) return null;
+
+  let stepNum = 0;
+  const blocks: { type: string; title?: string; body?: string; text?: string }[] = [];
+  const rawLines = text.split('\n');
+
+  let i = 0;
+  while (i < rawLines.length) {
+    const line = rawLines[i].trim();
+    if (!line) { i++; continue; }
+    const stepMatch = line.match(/^(ধাপ|step)\s*(\d+)?[\s\-—:：]*(.*)/i);
+    if (stepMatch) {
+      stepNum++;
+      const title = stepMatch[3] || '';
+      // next non-empty line as body
+      let body = '';
+      let j = i + 1;
+      while (j < rawLines.length) {
+        const next = rawLines[j].trim();
+        if (!next) { j++; continue; }
+        const isNext = /^(ধাপ|step|⚠️|❗|🚫|💡|✅|🌿|🌱)/i.test(next);
+        if (isNext) break;
+        body = next; i = j; break;
+      }
+      blocks.push({ type: 'step', title, body, text: String(stepNum) });
+    } else if (/^[⚠️❗🚫]/.test(line) || /সতর্ক|warning|সাবধান/i.test(line)) {
+      blocks.push({ type: 'warning', text: line.replace(/^[⚠️❗🚫]\s*/, '') });
+    } else if (/^[💡✅🌿🌱]/.test(line) || /^টিপ|^tip/i.test(line)) {
+      blocks.push({ type: 'tip', text: line.replace(/^[💡✅🌿🌱]\s*/, '') });
+    } else {
+      blocks.push({ type: 'text', text: line });
+    }
+    i++;
+  }
+
+  return (
+    <section className="rounded-2xl border border-emerald-200 shadow-sm mt-3 overflow-hidden">
+      <div className="flex items-center gap-2.5 px-4 py-3 bg-[#118137] text-white">
+        <Sprout className="w-4 h-4 shrink-0" />
+        <h3 className="text-sm font-black tracking-wide">চাষ পদ্ধতি</h3>
+      </div>
+      <div className="bg-white p-4 space-y-4">
+        {blocks.map((b, idx) => {
+          if (b.type === 'step') return (
+            <div key={idx} className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#118137] text-white text-xs font-black flex items-center justify-center shadow-sm">{b.text}</div>
+              <div className="flex-1 pt-0.5">
+                {b.title && <p className="text-sm font-bold text-slate-800 leading-snug">{b.title}</p>}
+                {b.body && <p className="text-xs text-slate-600 leading-relaxed mt-1">{b.body}</p>}
+              </div>
+            </div>
+          );
+          if (b.type === 'warning') return (
+            <div key={idx} className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
+              <span className="text-amber-500 shrink-0 mt-0.5">⚠️</span>
+              <p className="text-xs text-amber-800 font-medium leading-relaxed">{b.text}</p>
+            </div>
+          );
+          if (b.type === 'tip') return (
+            <div key={idx} className="flex items-start gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2.5">
+              <span className="text-emerald-500 shrink-0 mt-0.5">💡</span>
+              <p className="text-xs text-emerald-800 font-medium leading-relaxed">{b.text}</p>
+            </div>
+          );
+          return <p key={idx} className="text-xs text-slate-600 leading-relaxed">{b.text}</p>;
+        })}
+      </div>
+    </section>
+  );
+}
+
+
 interface ProductDetailPageProps {
   product: Product;
   onBack: () => void;
@@ -520,47 +594,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             })()}
 
             {/* Cultivation Guide Box */}
-            {product.cultivationGuide && (() => {
-              const guideLines = product.cultivationGuide.split('\n').filter((l: string) => l.trim());
-              return (
-                <section className="bg-gradient-to-br from-emerald-50/60 to-white rounded-2xl border border-emerald-200 shadow-xs mt-3 overflow-hidden">
-                  {/* Header */}
-                  <div className="flex items-center gap-2.5 px-4 py-3 bg-[#118137] text-white">
-                    <Sprout className="w-4 h-4 shrink-0" />
-                    <h3 className="text-sm font-black tracking-wide">চাষ পদ্ধতি</h3>
-                  </div>
-                  {/* Steps */}
-                  <div className="p-4 space-y-3">
-                    {guideLines.map((line: string, i: number) => {
-                      const isStep = /^(ধাপ|step|\d+[\.\)])/i.test(line.trim());
-                      const isWarning = /^[⚠️❗🚫]/.test(line.trim()) || /সতর্ক|warning|সাবধান/i.test(line);
-                      const isTip = /^[💡✅🌿🌱]/.test(line.trim()) || /টিপ|tip/i.test(line);
-                      if (isWarning) return (
-                        <div key={i} className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
-                          <span className="text-amber-500 text-sm mt-0.5 shrink-0">⚠️</span>
-                          <p className="text-xs text-amber-800 font-medium leading-relaxed">{line.replace(/^[⚠️❗🚫]\s*/, '')}</p>
-                        </div>
-                      );
-                      if (isTip) return (
-                        <div key={i} className="flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2.5">
-                          <span className="text-emerald-500 text-sm mt-0.5 shrink-0">💡</span>
-                          <p className="text-xs text-emerald-800 font-medium leading-relaxed">{line.replace(/^[💡✅🌿🌱]\s*/, '')}</p>
-                        </div>
-                      );
-                      if (isStep) return (
-                        <div key={i} className="flex items-start gap-3">
-                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#118137] text-white text-[10px] font-black flex items-center justify-center mt-0.5">{i + 1}</span>
-                          <p className="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed pt-0.5">{line.replace(/^(ধাপ\s*\d+[\s\-—:]*|step\s*\d+[\s\-—:]*|\d+[\.\)]\s*)/i, '')}</p>
-                        </div>
-                      );
-                      return (
-                        <p key={i} className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-1">{line}</p>
-                      );
-                    })}
-                  </div>
-                </section>
-              );
-            })()}
+            {product.cultivationGuide && <CultivationGuide text={product.cultivationGuide} />}
 
             {/* Delivery Box */}
             <section className="bg-white rounded-xl border border-slate-200/90 p-3.5 flex items-center gap-2.5 shadow-2xs text-xs sm:text-sm font-semibold text-slate-700">
