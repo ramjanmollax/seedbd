@@ -893,6 +893,15 @@ export function subscribeToProducts(callback: (products: Product[]) => void) {
           packSize: data.packSize || data.unit || '১ প্যাকেট',
           plantingTip: data.plantingTip || '',
           popular: Boolean(data.isPopular || data.popular),
+          seedType: data.seedType || '',
+          germinationRate: data.germinationRate || '',
+          cultivationGuide: data.cultivationGuide || '',
+          disableReviews: Boolean(data.disableReviews),
+          unit: data.unit || data.packSize || '',
+          sku: data.sku || '',
+          discount: Number(data.discount || 0),
+          featured: Boolean(data.featured),
+          active: data.active !== false,
         });
       });
 
