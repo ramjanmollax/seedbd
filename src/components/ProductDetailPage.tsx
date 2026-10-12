@@ -28,6 +28,7 @@ import { compressImageFile, preloadImage, trackViewContent } from '../lib/utils'
 // Expandable Description Component
 function ExpandableDescription({ text }: { text: string }) {
   const [expanded, setExpanded] = useState(false);
+  if (!text || !text.trim()) return null;
   const lines = text.split('\n').filter(Boolean);
   const isLong = lines.length > 4 || text.length > 300;
   const visibleLines = isLong && !expanded ? lines.slice(0, 4) : lines;
@@ -486,53 +487,37 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </section>
 
-            {/* 2x2 Specifications Box */}
-            <section className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden mt-3">
-              <div className="grid grid-cols-2 text-xs sm:text-sm">
-                <div className="p-3.5 border-r border-b border-slate-100 flex items-start gap-2.5 min-w-0">
-                  <Leaf className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-slate-400 text-[11px] font-medium truncate">বীজের ধরন</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm break-words">
-                      {product.seedType || categoryName}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3.5 border-b border-slate-100 flex items-start gap-2.5 min-w-0">
-                  <Sprout className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-slate-400 text-[11px] font-medium truncate">ফলন সময়</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm break-words">
-                      {product.germinationDays || product.sproutDays || '৬৫-৭০ দিন'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3.5 border-r border-slate-100 flex items-start gap-2.5 min-w-0">
-                  <Package className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-slate-400 text-[11px] font-medium truncate">পরিমাণ</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm break-words">
-                      {product.packSize || product.unit || '১০ গ্রাম'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3.5 flex items-start gap-2.5 min-w-0">
-                  <ShieldCheck className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-slate-400 text-[11px] font-medium truncate">অঙ্কুরোদগম হার</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm break-words">
-                      ন্যূনতম ৯০%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
               {/* Description */}
-              <ExpandableDescription text={product.description || 'উচ্চ ফলনশীল বীজ। টব বা ছাদে ফলন পাওয়ার জন্য এবং রোগ প্রতিরোধ ক্ষমতা সম্পন্ন। প্রিমিয়াম কোয়ালিটির বীজ।'} />
+              <ExpandableDescription text={product.description || ''} />
+
+            {/* Specifications Box - only show filled fields */}
+            {(() => {
+              const specs = [
+                product.seedType ? { icon: 'leaf', label: 'বীজের ধরন', value: product.seedType } : null,
+                (product.germinationDays || product.sproutDays) ? { icon: 'sprout', label: 'ফলন সময়', value: product.germinationDays || product.sproutDays } : null,
+                (product.packSize || product.unit) ? { icon: 'package', label: 'পরিমাণ', value: product.packSize || product.unit } : null,
+                product.germinationRate ? { icon: 'shield', label: 'অঙ্কুরোদগম হার', value: product.germinationRate } : null,
+              ].filter(Boolean);
+              if (specs.length === 0) return null;
+              return (
+                <section className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden mt-3">
+                  <div className="grid grid-cols-2 text-xs sm:text-sm">
+                    {(specs as any[]).map((spec, i) => (
+                      <div key={i} className={`p-3.5 flex items-start gap-2.5 min-w-0 ${i % 2 === 0 ? "border-r" : ""} ${i < specs.length - 2 ? "border-b" : ""} border-slate-100`}>
+                        {spec.icon === "leaf" && <Leaf className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />}
+                        {spec.icon === "sprout" && <Sprout className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />}
+                        {spec.icon === "package" && <Package className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />}
+                        {spec.icon === "shield" && <ShieldCheck className="w-5 h-5 text-[#118137] mt-0.5 shrink-0" />}
+                        <div className="min-w-0 flex-1">
+                          <p className="text-slate-400 text-[11px] font-medium">{spec.label}</p>
+                          <p className="font-bold text-slate-800 mt-0.5 text-xs sm:text-sm break-words">{spec.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })()}
 
             {/* Cultivation Guide Box */}
             {product.cultivationGuide && (() => {

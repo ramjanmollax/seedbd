@@ -25,6 +25,7 @@ export interface Product {
   plantingTip?: string;
   seedType?: string;
   cultivationGuide?: string;
+  germinationRate?: string;
   disableReviews?: boolean;
   popular?: boolean;
   isPopular?: boolean;
