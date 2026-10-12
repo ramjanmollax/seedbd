@@ -309,7 +309,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const categoryName = product.category || 'পণ্য কালেকশন';
 
   const relatedProducts = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
+    .filter((p) => p.category === product.category && p.id !== product.id && p.active !== false)
     .slice(0, 4);
 
   const discountPercent =
@@ -593,8 +593,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               );
             })()}
 
-            {/* Cultivation Guide Box */}
-            {product.cultivationGuide && <CultivationGuide text={product.cultivationGuide} />}
+
 
             {/* Delivery Box */}
             <section className="bg-white rounded-xl border border-slate-200/90 p-3.5 flex items-center gap-2.5 shadow-2xs text-xs sm:text-sm font-semibold text-slate-700">
@@ -694,6 +693,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
           </section>
         )}
+
+        {/* Cultivation Guide Box */}
+        {product.cultivationGuide && <CultivationGuide text={product.cultivationGuide} />}
 
         {/* Customer Reviews Section */}
         {reviewEnabled !== false && !product.disableReviews && (
